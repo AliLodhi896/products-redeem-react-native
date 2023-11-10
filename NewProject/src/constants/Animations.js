@@ -6,12 +6,12 @@ import {
   Dimensions,
   Animated,
 } from 'react-native';
-import Lottie from 'lottie-react-native';
+import LottieView  from 'lottie-react-native';
 
 const Animations = ({type}) => {
   return (
-    <View style={[{height:200,width:'100%',alignContent:'center',alignItems:"center",justifyContent:'center',marginTop:'30%'}]}>
-        <Lottie source={require('../assets/animations/welcome.json')} autoPlay loop   />
+    <View style={[{height:'100%',width:'100%',alignContent:'center',alignItems:"center",justifyContent:'center'}]}>
+        <LottieView source={require('../assets/animations/welcome.json')} autoPlay loop />
     </View>
   );
 };

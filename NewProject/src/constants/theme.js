@@ -18,6 +18,7 @@ export default {
     medium: 16,
     large: 20,
     xl: 24,
+    xxl: 30,
   },
   margins: {
     xsm: 8,

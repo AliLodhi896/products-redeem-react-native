@@ -1,14 +1,12 @@
 import React, {useEffect, useContext} from 'react';
-import {View, Text, StyleSheet,Image, TouchableOpacity  } from 'react-native';
+import {View, Text, StyleSheet,Image  ,TouchableOpacity} from 'react-native';
 import theme from '../../constants/theme';
 import {useForm} from 'react-hook-form';
 import {InputField, PrimaryButton, SecondaryHeader} from '../../components';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
-import { AuthContext } from '../../context/AuthContext';
 
-const OnBoarding = () => {
+const Registration = () => {
   const navigation = useNavigation();
-  const {setIsSignin} = useContext(AuthContext);
   const {
     control,
     handleSubmit,
@@ -17,7 +15,6 @@ const OnBoarding = () => {
   return (
     <View style={styles.mainContainer}>
       <SecondaryHeader />
-
       <View
         style={{
           alignContent: 'center',
@@ -25,7 +22,6 @@ const OnBoarding = () => {
           flexDirection: 'row',
           marginVertical: theme.margins.large,
         }}>
-
         <View style={styles.logoContainer}>
           <Image 
             source={require('../../assets/images/logo.png')}
@@ -35,10 +31,23 @@ const OnBoarding = () => {
         </View>
       </View>
       <View style={styles.sectionContainer}>
-        <Text style={styles.sectionHeading}>Login</Text>
+        <Text style={styles.sectionHeading}>Register</Text>
         <Text style={styles.sectionDescription}>
-          Login to continue using the app
+          Enter Your Personal Information
         </Text>
+        <InputField
+          name="Username"
+          control={control}
+          lable={'Username'}
+          rules={{
+            required: 'Username is required',
+            pattern: {
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+              message: 'Invalid Username address',
+            },
+          }}
+          placeholder="Enter your Username..."
+        />
         <InputField
           name="email"
           control={control}
@@ -65,29 +74,30 @@ const OnBoarding = () => {
           }}
           placeholder="Enter your password..."
         />
-        <Text
-          style={{
-            fontSize: 14,
-            color: theme.colors.disbaled,
-            fontWeight: 'bold',
-            textAlign: 'right',
-          }}>
-          Forgot Password?
-        </Text>
-        <PrimaryButton title="Login" 
-          onPress={() =>setIsSignin(true)}
+        <InputField
+          name="Confirm Password"
+          control={control}
+          lable={'Confirm Password'}
+          rules={{
+            required: 'Confirm Password is required',
+            pattern: {
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+              message: 'Invalid Confirm Password address',
+            },
+          }}
+          placeholder="Enter your Confirm Password..."
         />
+        <PrimaryButton title="Register" />
 
         <View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
             <Text style={{fontSize:14,color:theme.colors.disbaled,fontWeight:'bold'}}>
-              Don't have an account?
+             Already have an account?
             </Text>  
             <TouchableOpacity onPress={() =>navigation.navigate('Registration')}>
             <Text style={{fontSize:14,color:theme.colors.primary,fontWeight:'bold',marginLeft:10}}>
-              Register Now
+           Sign In
             </Text>  
-              </TouchableOpacity>
-            
+              </TouchableOpacity> 
         </View>
       </View>
     </View>
@@ -121,4 +131,4 @@ const styles = StyleSheet.create({
     marginVertical: theme.margins.small,
   },
 });
-export default OnBoarding;
+export default Registration;

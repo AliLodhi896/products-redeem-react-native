@@ -1,7 +1,6 @@
 import React, {forwardRef} from 'react';
 import {StyleSheet, View, TextInput, Text, Platform} from 'react-native';
 import {useController} from 'react-hook-form';
-import style from './style';
 import theme from '../../constants/theme';
 
 const Inputfield = forwardRef((props, ref) => {
@@ -12,7 +11,7 @@ const Inputfield = forwardRef((props, ref) => {
     rules: props.rules,
   });
   return (
-    <View style={[{marginVertical: 10, marginHorizontal: 10}, props.style]}>
+    <View style={[{marginVertical: 10, }, props.style]}>
       {props.lableVisible == false ? null : (
         <Text style={[styles.lable, props.lableStyle]}>{props.lable}</Text>
       )}
@@ -21,7 +20,7 @@ const Inputfield = forwardRef((props, ref) => {
         ref={ref}
         underlineColorAndroid="transparent"
         multiline={props.multiline}
-        style={[props.styles, style.inputfield]}
+        style={[props.styles, styles.inputfield]}
         placeholder={props.placeholder}
         onChangeText={field.onChange}
         placeholderTextColor={theme.colors.secondaryText}
@@ -40,18 +39,20 @@ const Inputfield = forwardRef((props, ref) => {
 const styles = StyleSheet.create({
   lable: {
     fontSize: 12,
-    color: Colors.primaryText,
+    color: theme.colors.primaryText,
     marginVertical: 5,
   },
   inputfield: {
     backgroundColor: theme.colors.secondary,
-    borderRadius: 20,
+    borderRadius: 40,
     width: '100%',
     fontSize: 14,
-    color: theme.colors.secondaryText,
+    color: theme.colors.primaryText,
     letterSpacing: -0.575,
     paddingHorizontal: 10,
-    paddingVertical: Platform.OS == 'ios' ? 15 : 7,
+    paddingVertical: Platform.OS == 'ios' ? 15 : 12,
+    borderWidth:2,
+    borderColor:theme.colors.lightdisbaled
   },
 });
 export default Inputfield;
