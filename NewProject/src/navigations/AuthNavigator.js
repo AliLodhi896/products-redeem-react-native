@@ -5,7 +5,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 //Import Navigation
 import {createStackNavigator,TransitionSpecs} from '@react-navigation/stack';
 import theme from '../constants/theme';
-import { OnBoarding, Registration, Welcome } from '../screens';
+import { OnBoarding, Registration, Verification, Welcome } from '../screens';
 
 
 const AuthStack = createStackNavigator();
@@ -63,6 +63,11 @@ export const AuthNavigator = () => {
         <AuthStack.Screen
           name="Registration"
           component={Registration}
+          options={{headerShown: false}}
+        />
+         <AuthStack.Screen
+          name="Verification"
+          component={Verification}
           options={{headerShown: false}}
         />
       </AuthStack.Navigator>

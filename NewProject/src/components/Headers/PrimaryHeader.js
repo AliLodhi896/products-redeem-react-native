@@ -1,51 +1,62 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {
   Text,
   TouchableOpacity,
   ActivityIndicator,
   StyleSheet,
   View,
-  Image
+  Image,
 } from 'react-native';
 
 // import Constants
 import theme from '../../constants/theme';
 import Icon from '../../constants/Icon';
+import {AuthContext} from '../../context/AuthContext';
 
 const PrimaryHeader = props => {
+  const {userDetails} = useContext(AuthContext);
+
   return (
-    <View style={{alignItems:'center',width:'100%',padding:20,flexDirection:'row',paddingVertical:40,justifyContent:'space-between'}}>
-      <View style={{flexDirection:'row',alignItems:'center'}}>
-      <TouchableOpacity
-        disabled={props.disable}
-        style={[styles.container, props.style]}
-        onPress={props.onPress}>
-          <Image 
+    <View
+      style={{
+        alignItems: 'center',
+        width: '100%',
+        padding: 20,
+        flexDirection: 'row',
+        paddingVertical: 40,
+        justifyContent: 'space-between',
+      }}>
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <TouchableOpacity
+          disabled={props.disable}
+          style={[styles.container, props.style]}
+          onPress={props.onPress}>
+          <Image
             source={require('../../assets/images/user.png')}
-            style={{width:"100%", height:"100%"}}
-            resizeMode='contain'
+            style={{width: '100%', height: '100%'}}
+            resizeMode="contain"
           />
-      </TouchableOpacity>
-        <View style={{marginLeft:10}}>
-            <Text style={{fontSize:14,fontWeight:"bold",color:theme.colors.primaryText}}>
-                    First Name 
-            </Text>
-            <Text style={{fontSize:14,fontWeight:"bold",color:theme.colors.primaryText}}>
-                    Last Name 
-            </Text>
-            <Text style={{fontSize:10,color:theme.colors.primaryText}}>
-                    User name
-            </Text>
+        </TouchableOpacity>
+        <View style={{marginLeft: 10}}>
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: 'bold',
+              color: theme.colors.primaryText,
+            }}>
+            {userDetails?.Name}
+          </Text>
+          <Text style={{fontSize: 10, color: theme.colors.primaryText}}>
+            {userDetails?.Email}
+          </Text>
         </View>
-        
       </View>
       <Icon
-          icon_type={'FontAwesome'}
-          name={'cog'}
-          size={20}
-          color={theme.colors.primaryText}
-
-        />
+        icon_type={'FontAwesome'}
+        name={'cog'}
+        size={20}
+        color={theme.colors.primaryText}
+      />
     </View>
   );
 };
@@ -68,6 +79,6 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     alignItems: 'center',
     justifyContent: 'center',
-    padding:10,
+    padding: 10,
   },
 });

@@ -1,23 +1,61 @@
-import React, {useEffect, useContext} from 'react';
-import {View, Text, StyleSheet,Image, TouchableOpacity  } from 'react-native';
+import React, {useState, useContext} from 'react';
+import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import theme from '../../constants/theme';
 import {useForm} from 'react-hook-form';
 import {InputField, PrimaryButton, SecondaryHeader} from '../../components';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
-import { AuthContext } from '../../context/AuthContext';
+import {AuthContext} from '../../context/AuthContext';
+import {registered_or_unregistered} from '../../apis';
+import Toast from 'react-native-toast-message';
 
 const OnBoarding = () => {
   const navigation = useNavigation();
-  const {setIsSignin} = useContext(AuthContext);
+  const {setIsSignin,appInfo} = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false);
   const {
     control,
     handleSubmit,
     formState: {errors, isValid},
   } = useForm({mode: 'all'});
+
+  const sendOtp = async data => {
+    setIsLoading(true)
+    const responseData = await registered_or_unregistered(data?.mobile_no);
+    console.log('responseData',responseData)
+    if (
+      responseData?.message == 'OTP Sent Successfully' &&
+      responseData?.is_register == 0
+    ) {
+      Toast.show({
+        type: 'success',
+        text1: 'Please Register Youreself !',
+        visibilityTime: 2000,
+      });
+      navigation.navigate('Registration', {otp: responseData?.OTP});
+    } else if (
+      responseData?.message == 'OTP Sent Successfully' &&
+      responseData?.is_register == 1
+    ){
+      Toast.show({
+        type: 'success',
+        text1: responseData?.message,
+        visibilityTime: 2000,
+      });
+      navigation.navigate('Verification', {mobile_no: data?.mobile_no});
+    }else{
+      Toast.show({
+        type: 'error',
+        text1: 'Something Went Wrong !',
+        visibilityTime: 2000,
+      });
+    }
+    setIsLoading(false)
+
+  };
+
   return (
     <View style={styles.mainContainer}>
-      <SecondaryHeader />
-
+      <SecondaryHeader onPress={()=>navigation.goBack()} />
       <View
         style={{
           alignContent: 'center',
@@ -25,12 +63,11 @@ const OnBoarding = () => {
           flexDirection: 'row',
           marginVertical: theme.margins.large,
         }}>
-
         <View style={styles.logoContainer}>
-          <Image 
-            source={require('../../assets/images/logo.png')}
-            style={{width:"100%", height:"100%"}}
-            resizeMode='contain'
+          <Image
+            source={{uri:appInfo?.Logo}}
+            style={{width: '100%', height: '100%'}}
+            resizeMode="contain"
           />
         </View>
       </View>
@@ -40,54 +77,44 @@ const OnBoarding = () => {
           Login to continue using the app
         </Text>
         <InputField
-          name="email"
+          name="mobile_no"
           control={control}
-          lable={'Email'}
+          lable={'Mobile Number'}
           rules={{
-            required: 'email is required',
-            pattern: {
-              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-              message: 'Invalid email address',
-            },
+            required: 'Mobile Number is required',
           }}
-          placeholder="Enter your email..."
+          placeholder="Enter your mobile number..."
         />
-        <InputField
-          name="password"
-          control={control}
-          lable={'Password'}
-          rules={{
-            required: 'Password is required',
-            pattern: {
-              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-              message: 'Invalid Password address',
-            },
-          }}
-          placeholder="Enter your password..."
-        />
-        <Text
-          style={{
-            fontSize: 14,
-            color: theme.colors.disbaled,
-            fontWeight: 'bold',
-            textAlign: 'right',
-          }}>
-          Forgot Password?
-        </Text>
-        <PrimaryButton title="Login" 
-          onPress={() =>setIsSignin(true)}
-        />
+        {errors.mobile_no && (
+          <Text style={styles.errormessage}>* {errors.mobile_no.message}</Text>
+        )}
+        <PrimaryButton loader={isLoading} title="Send OTP" onPress={handleSubmit(sendOtp)} />
 
-        <View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-            <Text style={{fontSize:14,color:theme.colors.disbaled,fontWeight:'bold'}}>
-              Don't have an account?
-            </Text>  
-            <TouchableOpacity onPress={() =>navigation.navigate('Registration')}>
-            <Text style={{fontSize:14,color:theme.colors.primary,fontWeight:'bold',marginLeft:10}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          {/* <Text
+            style={{
+              fontSize: 14,
+              color: theme.colors.disbaled,
+              fontWeight: 'bold',
+            }}> */}
+            {/* Don't have an account?
+          </Text> */}
+          {/* <TouchableOpacity onPress={() => navigation.navigate('Registration')}>
+            <Text
+              style={{
+                fontSize: 14,
+                color: theme.colors.primary,
+                fontWeight: 'bold',
+                marginLeft: 10,
+              }}>
               Register Now
-            </Text>  
-              </TouchableOpacity>
-            
+            </Text>
+          </TouchableOpacity> */}
         </View>
       </View>
     </View>
@@ -103,7 +130,7 @@ const styles = StyleSheet.create({
     width: 100,
     borderRadius: 100,
     backgroundColor: theme.colors.secondary,
-    padding:10
+    padding: 10,
   },
   sectionContainer: {
     paddingHorizontal: theme.padding.medium,
@@ -119,6 +146,10 @@ const styles = StyleSheet.create({
     color: theme.colors.secondaryText,
     fontWeight: '500',
     marginVertical: theme.margins.small,
+  },
+  errormessage: {
+    fontSize: 14,
+    color: theme.colors.error,
   },
 });
 export default OnBoarding;

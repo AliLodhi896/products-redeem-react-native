@@ -1,42 +1,71 @@
 import React, {useState, useContext} from 'react';
-import {View, Text, StyleSheet, Alert} from 'react-native';
+import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
 import theme from '../constants/theme';
 import {useForm} from 'react-hook-form';
-import {InputField, PrimaryButton, SecondaryHeader} from '../components';
 import PrimaryHeader from '../components/Headers/PrimaryHeader';
-import Icon from '../constants/Icon';
 import QRCodeScanner from 'react-native-qrcode-scanner';
+import {scan_item} from '../apis';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
+import {AuthContext} from '../context/AuthContext';
+import Toast from 'react-native-toast-message';
 
 const Scanner = () => {
+  const navigation = useNavigation();
   const {
     control,
     handleSubmit,
     formState: {errors, isValid},
   } = useForm({mode: 'all'});
-  const [scannerOpen, setscannerOpen] = useState(false);
+  const {userToken} = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false);
 
-  console.log('Scanner',)
-
+  const scanItem = async value => {
+    setIsLoading(true);
+    const responseData = await scan_item(value, userToken);
+    if (responseData?.status == 'success') {
+      Toast.show({
+        type: 'success',
+        text1: responseData?.message,
+        visibilityTime: 2000,
+      });
+      navigation.navigate('Registration', {otp: responseData?.OTP});
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: responseData?.message,
+        visibilityTime: 2000,
+      });
+    }
+    setIsLoading(false);
+  };
 
   return (
     <View style={styles.mainContainer}>
       <PrimaryHeader />
       <View style={styles.sectionContainer}>
-      <View style={{  marginTop:80}}>
-                <QRCodeScanner
-                  onRead={data => Alert.alert(JSON.stringify(data))}
-                  
-                  reactivate={true}
-                  showMarker={true}
-                  containerStyle={{
-                    backgroundColor: theme.colors.lightdisbaled,
-                    width: '100%',
-                  }}
-                  cameraContainerStyle={{width: '100%'}}
-                  cameraStyle={{width: '100%'}}
-                  reactivateTimeout={500}
-                />
-              </View>
+        {isLoading == true ? (
+          <View style={{flex:1,justifyContent:'center',alignItems:'center',marginTop:'70%'}}>
+            <ActivityIndicator
+            style={{paddingVertical: 5}}
+            size={40}
+            color={theme.colors.primary}
+          />
+          </View>
+        ) : (
+            <QRCodeScanner
+              onRead={data => scanItem(data?.data)}
+              reactivate={true}
+              showMarker={true}
+              containerStyle={{
+                backgroundColor: theme.colors.lightdisbaled,
+                width: '100%',
+                marginTop:80
+              }}
+              cameraContainerStyle={{width: '100%'}}
+              cameraStyle={{width: '100%'}}
+              reactivateTimeout={500}
+            />
+        )}
       </View>
     </View>
   );
@@ -55,7 +84,7 @@ const styles = StyleSheet.create({
   },
   sectionContainer: {
     paddingHorizontal: theme.padding.medium,
-    marginTop: theme.margins.medium,
+    marginTop: theme.margins.medium,alignItems:'center',alignContent:'center',justifyContent:'center'
   },
   sectionHeading: {
     fontSize: theme.fontSizes.xxl,

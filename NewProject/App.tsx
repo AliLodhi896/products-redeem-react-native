@@ -5,8 +5,7 @@
  * @format
  */
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import React,{useContext,useCallback} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -16,21 +15,19 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import { OnBoarding,Registration,Home,RedeemRequests,ScanRequest,Welcome } from './src/screens';
-import theme from './src/constants/theme';
 import { AuthProvider } from './src/context/AuthContext';
 import AppNavigationContainer from './src/navigations/NavigationContainer';
+import Toast from 'react-native-toast-message';
 
 function App(): JSX.Element {
-  return (
-    // <SafeAreaView style={{flex: 1}}>
-    //   <ScrollView  style={{flex: 1,backgroundColor:theme.colors.background}}>
-    //     <Welcome />
-    //   </ScrollView>
-    // </SafeAreaView>
-    <AuthProvider>
-    <AppNavigationContainer/>
 
+
+  return (
+    <AuthProvider>
+      <SafeAreaView style={{flex: 1}}>
+      <AppNavigationContainer/>
+      <Toast />
+      </SafeAreaView>
     </AuthProvider>
   );
 }

@@ -1,11 +1,27 @@
-import React, {useState} from 'react';
+import React, {useContext,useCallback} from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import {DottedSlider, PrimaryButton} from '../../components';
 import theme from '../../constants/theme';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
+import { AuthContext } from '../../context/AuthContext';
+import { get_app_info } from '../../apis/Authentication';
 
 const Welcome = () => {
   const navigation = useNavigation();
+  const {setAppInfo,appInfo} = useContext(AuthContext);
+console.log('appInfo',appInfo)
+  const getAppInfo = async () => {
+    const responseData = await get_app_info();
+    if (responseData?.status == 'success') {
+      setAppInfo(responseData?.data);
+    }
+  };
+  useFocusEffect(
+    useCallback(() => {
+      getAppInfo();
+    }, []),
+  );
+
   const slides = [
     'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys',
     'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys',

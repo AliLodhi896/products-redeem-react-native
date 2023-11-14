@@ -1,10 +1,18 @@
-import React, {useEffect, useContext} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useContext, useCallback} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import theme from '../constants/theme';
 import {useForm} from 'react-hook-form';
-import {InputField, PrimaryButton, SecondaryHeader} from '../components';
+import {PrimaryButton} from '../components';
 import PrimaryHeader from '../components/Headers/PrimaryHeader';
 import Icon from '../constants/Icon';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
+import {AuthContext} from '../context/AuthContext';
 
 const Home = () => {
   const {
@@ -12,168 +20,192 @@ const Home = () => {
     handleSubmit,
     formState: {errors, isValid},
   } = useForm({mode: 'all'});
+  const navigation = useNavigation();
+  const {setIsSignin,appInfo} = useContext(AuthContext);
+
+
   return (
     <View style={styles.mainContainer}>
       <PrimaryHeader />
-      <View style={styles.sectionContainer}>
+      <ScrollView style={styles.sectionContainer}>
         <Text style={styles.sectionHeading}>Welcome</Text>
-        <Text style={styles.sectionHeading}>To App Name</Text>
-        <View style={{flexDirection:'row',flexWrap:'wrap',justifyContent:'space-between',marginTop:20}}>
-        <TouchableOpacity
+        <Text style={styles.sectionHeading}>To {appInfo?.CName}</Text>
+        <View
           style={{
-            height: 150,
-            width: '48%',
-            backgroundColor: theme.colors.backgroundSecondary,
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 2,
-              height: 2,
-            },
-            shadowOpacity: 0.2,
-            shadowRadius: 5,
-            elevation: 10,
-            borderRadius: 20,
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginVertical:20
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+            marginTop: 20,
+            marginHorizontal:10
           }}>
-          <View style={styles.container}>
-            <Icon
-              icon_type={'FontAwesome5'}
-              name={'history'}
-              size={20}
-              color={theme.colors.background}
-            />
-          </View>
-          <Text
+          <TouchableOpacity
+            onPress={() => navigation.navigate('ScanRequest')}
             style={{
-              fontSize: 14,
-              color: theme.colors.primaryText,
-              fontWeight: 'bold',
-              marginTop: 20,
+              height: 150,
+              width: '48%',
+              backgroundColor: theme.colors.backgroundSecondary,
+              shadowColor: '#000',
+              shadowOffset: {
+                width: 2,
+                height: 2,
+              },
+              shadowOpacity: 0.2,
+              shadowRadius: 5,
+              elevation: 10,
+              borderRadius: 20,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginVertical: 20,
             }}>
-            Scan History
-          </Text>
-        </TouchableOpacity>
+            <View style={styles.container}>
+              <Icon
+                icon_type={'FontAwesome5'}
+                name={'history'}
+                size={20}
+                color={theme.colors.background}
+              />
+            </View>
+            <Text
+              style={{
+                fontSize: 14,
+                color: theme.colors.primaryText,
+                fontWeight: 'bold',
+                marginTop: 20,
+              }}>
+              Scan History
+            </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={{
-            height: 150,
-            width: '48%',
-            backgroundColor: theme.colors.backgroundSecondary,
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 2,
-              height: 2,
-            },
-            shadowOpacity: 0.2,
-            shadowRadius: 5,
-            elevation: 10,
-            borderRadius: 20,
-            alignItems: 'center',
-            justifyContent: 'center',
-            
-          }}>
-          <View style={styles.container2}>
-            <Icon
-              icon_type={'Ionicons'}
-              name={'scan'}
-              size={20}
-              color={theme.colors.background}
-            />
-          </View>
-          <Text
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Scanner')}
             style={{
-              fontSize: 14,
-              color: theme.colors.primaryText,
-              fontWeight: 'bold',
-              marginTop: 20,
+              height: 150,
+              width: '48%',
+              backgroundColor: theme.colors.backgroundSecondary,
+              shadowColor: '#000',
+              shadowOffset: {
+                width: 2,
+                height: 2,
+              },
+              shadowOpacity: 0.2,
+              shadowRadius: 5,
+              elevation: 10,
+              borderRadius: 20,
+              alignItems: 'center',
+              justifyContent: 'center',
             }}>
-            Scan QR
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            height: 150,
-            width: '48%',
-            backgroundColor: theme.colors.backgroundSecondary,
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 2,
-              height: 2,
-            },
-            shadowOpacity: 0.2,
-            shadowRadius: 5,
-            elevation: 10,
-            borderRadius: 20,
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginVertical:20
-
-          }}>
-          <View style={styles.container3}>
-            <Icon
-              icon_type={'MaterialCommunityIcons'}
-              name={'email'}
-              size={20}
-              color={theme.colors.background}
-            />
-          </View>
-          <Text
+            <View style={styles.container2}>
+              <Icon
+                icon_type={'Ionicons'}
+                name={'scan'}
+                size={20}
+                color={theme.colors.background}
+              />
+            </View>
+            <Text
+              style={{
+                fontSize: 14,
+                color: theme.colors.primaryText,
+                fontWeight: 'bold',
+                marginTop: 20,
+              }}>
+              Scan QR
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('RedeemRequests')}
             style={{
-              fontSize: 14,
-              color: theme.colors.primaryText,
-              fontWeight: 'bold',
-              marginTop: 20,
+              height: 150,
+              width: '48%',
+              backgroundColor: theme.colors.backgroundSecondary,
+              shadowColor: '#000',
+              shadowOffset: {
+                width: 2,
+                height: 2,
+              },
+              shadowOpacity: 0.2,
+              shadowRadius: 5,
+              elevation: 10,
+              borderRadius: 20,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginVertical: 20,
             }}>
-            Redeem Request
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            height: 150,
-            width: '48%',
-            backgroundColor: theme.colors.backgroundSecondary,
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 2,
-              height: 2,
-            },
-            shadowOpacity: 0.2,
-            shadowRadius: 5,
-            elevation: 10,
-            borderRadius: 20,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <View style={styles.container4}>
-            <Icon
-              icon_type={'AntDesign'}
-              name={'logout'}
-              size={20}
-              color={theme.colors.background}
-            />
-          </View>
-          <Text
+            <View style={styles.container3}>
+              <Icon
+                icon_type={'MaterialCommunityIcons'}
+                name={'email'}
+                size={20}
+                color={theme.colors.background}
+              />
+            </View>
+            <Text
+              style={{
+                fontSize: 14,
+                color: theme.colors.primaryText,
+                fontWeight: 'bold',
+                marginTop: 20,
+              }}>
+              Redeem Request
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setIsSignin(false)}
             style={{
-              fontSize: 14,
-              color: theme.colors.primaryText,
-              fontWeight: 'bold',
-              marginTop: 20,
+              height: 150,
+              width: '48%',
+              backgroundColor: theme.colors.backgroundSecondary,
+              shadowColor: '#000',
+              shadowOffset: {
+                width: 2,
+                height: 2,
+              },
+              shadowOpacity: 0.2,
+              shadowRadius: 5,
+              elevation: 10,
+              borderRadius: 20,
+              alignItems: 'center',
+              justifyContent: 'center',
             }}>
-            Logout
-          </Text>
-        </TouchableOpacity>
+            <View style={styles.container4}>
+              <Icon
+                icon_type={'AntDesign'}
+                name={'logout'}
+                size={20}
+                color={theme.colors.background}
+              />
+            </View>
+            <Text
+              style={{
+                fontSize: 14,
+                color: theme.colors.primaryText,
+                fontWeight: 'bold',
+                marginTop: 20,
+              }}>
+              Logout
+            </Text>
+          </TouchableOpacity>
         </View>
-        <PrimaryButton title="History" />
-        <Text style={{fontSize:12,color:theme.colors.disbaled,textAlign:'center',marginTop:10}}>
-            2023 @ App Name. All rights reserved
+        <Text
+          style={{
+            fontSize: 12,
+            color: theme.colors.disbaled,
+            textAlign: 'center',
+            marginTop: 10,
+          }}>
+          2023 @ {appInfo?.CName}. All rights reserved
         </Text>
-        <Text style={{fontSize:12,color:theme.colors.disbaled,textAlign:'center',fontWeight:'bold',marginTop:10}}>
-            Terms & Condtions 
+        <Text
+          style={{
+            fontSize: 12,
+            color: theme.colors.disbaled,
+            textAlign: 'center',
+            fontWeight: 'bold',
+            marginTop: 10,
+          }}>
+          Terms & Condtions
         </Text>
-      </View>
-
+      </ScrollView>
     </View>
   );
 };

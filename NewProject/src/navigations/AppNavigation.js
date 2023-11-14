@@ -64,7 +64,7 @@ export const AppBottomTab = ({navigation}) => {
         }}
       />
       <Tab.Screen
-        name="Scan QR"
+        name="Scanner"
         component={Scanner}
         options={{
           headerShown: false,
