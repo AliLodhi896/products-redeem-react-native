@@ -51,12 +51,14 @@ const PrimaryHeader = props => {
           </Text>
         </View>
       </View>
-      <Icon
+     <TouchableOpacity onPress={props.onPressRefresh}>
+     <Icon
         icon_type={'FontAwesome'}
-        name={'cog'}
+        name={'refresh'}
         size={20}
         color={theme.colors.primaryText}
       />
+     </TouchableOpacity>
     </View>
   );
 };

@@ -1,6 +1,7 @@
 import OnBoarding from "./Authentication/OnBoarding";
 import Registration from "./Authentication/Registration";
 import Verification from "./Authentication/Verification";
+import SignOut from "./Authentication/SignOut";
 
 
 import Home from "./Home";

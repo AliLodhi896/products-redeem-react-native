@@ -13,15 +13,22 @@ import {InputField, PrimaryButton, SecondaryHeader} from '../../components';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {registration} from '../../apis';
 import Toast from 'react-native-toast-message';
+import { AuthContext } from '../../context/AuthContext';
 
 const Registration = ({route}) => {
-  const navigation = useNavigation();
-  const {otp} = route.params;
+  const {otp,mobile_no} = route.params;
   const {
     control,
     handleSubmit,
-    formState: {errors, isValid},
-  } = useForm({mode: 'all'});
+    formState: { errors, isValid },
+  } = useForm({
+    mode: 'all',
+    defaultValues: {
+      mobile_no: mobile_no,
+    },
+  });
+  const navigation = useNavigation();
+  const {setIsSignin,appInfo} = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
 
   const signIn = async data => {
@@ -56,11 +63,11 @@ const Registration = ({route}) => {
             marginVertical: theme.margins.large,
           }}>
           <View style={styles.logoContainer}>
-            <Image
-              source={require('../../assets/images/logo.png')}
-              style={{width: '100%', height: '100%'}}
-              resizeMode="contain"
-            />
+          <Image
+            source={{uri:appInfo?.Logo}}
+            style={{width: '100%', height: '100%'}}
+            resizeMode="contain"
+          />
           </View>
         </View>
         <View style={styles.sectionContainer}>
@@ -71,11 +78,11 @@ const Registration = ({route}) => {
           <InputField
             name="username"
             control={control}
-            lable={'Username'}
+            lable={'Full name'}
             rules={{
-              required: 'Username is required',
+              required: 'Full name is required',
             }}
-            placeholder="Enter your username..."
+            placeholder="Enter your full name..."
           />
           {errors.username && (
             <Text style={styles.errormessage}>* {errors.username.message}</Text>
@@ -83,15 +90,15 @@ const Registration = ({route}) => {
           <InputField
             name="email"
             control={control}
-            lable={'Email'}
+            lable={'Email address'}
             rules={{
-              required: 'email is required',
+              required: 'Email address is required',
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                 message: 'Invalid Email Address',
               },
             }}
-            placeholder="Enter your email..."
+            placeholder="Enter your email address..."
           />
           {errors.email && (
             <Text style={styles.errormessage}>* {errors.email.message}</Text>
@@ -99,11 +106,11 @@ const Registration = ({route}) => {
           <InputField
             name="mobile_no"
             control={control}
-            lable={'Mobile Number'}
+            lable={'Mobile/WhatsApp Number'}
             rules={{
-              required: 'Mobile number is required',
+              required: 'Mobile/WhatsApp Number is required',
             }}
-            placeholder="Enter your mobile number..."
+            placeholder="Enter your mobile/whatsApp number..."
           />
           {errors.mobile_no && (
             <Text style={styles.errormessage}>
@@ -114,11 +121,11 @@ const Registration = ({route}) => {
           <InputField
             name="address_1"
             control={control}
-            lable={'Address One'}
+            lable={'Address Line 1'}
             rules={{
-              required: 'Address One is required',
+              required: 'Address Line 1 is required',
             }}
-            placeholder="Enter youraddress one..."
+            placeholder="Enter your address line 1..."
           />
           {errors.address_1 && (
             <Text style={styles.errormessage}>
@@ -128,11 +135,11 @@ const Registration = ({route}) => {
           <InputField
             name="address_2"
             control={control}
-            lable={'Address Two'}
+            lable={'Address Line 2,'}
             rules={{
-              required: 'Address Two is required',
+              required: 'Address Line 2, is required',
             }}
-            placeholder="Enter your address two..."
+            placeholder="Enter your address line 2,..."
           />
           {errors.address_2 && (
             <Text style={styles.errormessage}>
@@ -163,19 +170,7 @@ const Registration = ({route}) => {
           {errors.state && (
             <Text style={styles.errormessage}>* {errors.state.message}</Text>
           )}
-          <InputField
-            name="docs_no"
-            control={control}
-            lable={'Docs Number'}
-            rules={{
-              required: 'Docs Number is required',
-            }}
-            placeholder="Enter your docs number..."
-          />
-          {errors.docs_no && (
-            <Text style={styles.errormessage}>* {errors.docs_no.message}</Text>
-          )}
-          <InputField
+           <InputField
             name="docs_name"
             control={control}
             lable={'Docs Name'}
@@ -189,6 +184,19 @@ const Registration = ({route}) => {
               * {errors.docs_name.message}
             </Text>
           )}
+          <InputField
+            name="docs_no"
+            control={control}
+            lable={'Docs Number'}
+            rules={{
+              required: 'Docs Number is required',
+            }}
+            placeholder="Enter your docs number..."
+          />
+          {errors.docs_no && (
+            <Text style={styles.errormessage}>* {errors.docs_no.message}</Text>
+          )}
+         
           <PrimaryButton loader={isLoading}  onPress={handleSubmit(signIn)} title="Register" />
           <View
             style={{
@@ -227,10 +235,8 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
   },
   logoContainer: {
-    height: 100,
-    width: 100,
-    borderRadius: 100,
-    backgroundColor: theme.colors.secondary,
+    height: 200,
+    width: 200,
     padding: 10,
   },
   sectionContainer: {

@@ -5,6 +5,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import theme from '../constants/theme';
 import Icon from '../constants/Icon';
 import { Home, RedeemRequests, ScanRequest, Scanner, Welcome } from '../screens';
+import SignOut from '../screens/Authentication/SignOut';
 
 const MainStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -44,18 +45,18 @@ export const AppBottomTab = ({navigation}) => {
           ),
         }}
       />
-      <Tab.Screen
-        name="RedeemRequests"
-        component={RedeemRequests}
+           <Tab.Screen
+        name="ScanRequest"
+        component={ScanRequest}
         options={{
           headerShown: false,
           tabBarShowLabel: true, // Enable label
-          tabBarLabel: 'Redeen Req', // Custom label text
+          tabBarLabel: 'Scan History', // Custom label text
           tabBarIcon: ({focused, color, size}) => (
             <View style={styles.notFocusedIcon}>
               <Icon
                 icon_type={'MaterialIcons'}
-                name={'redeem'}
+                name={'document-scanner'}
                 size={25}
                 color={focused ? theme.colors.primary : theme.colors.disbaled}
               />
@@ -85,18 +86,18 @@ export const AppBottomTab = ({navigation}) => {
           ),
         }}
       />
-      <Tab.Screen
-        name="ScanRequest"
-        component={ScanRequest}
+       <Tab.Screen
+        name="RedeemRequests"
+        component={RedeemRequests}
         options={{
           headerShown: false,
           tabBarShowLabel: true, // Enable label
-          tabBarLabel: 'Scan History', // Custom label text
+          tabBarLabel: 'Redeen Req', // Custom label text
           tabBarIcon: ({focused, color, size}) => (
             <View style={styles.notFocusedIcon}>
               <Icon
                 icon_type={'MaterialIcons'}
-                name={'document-scanner'}
+                name={'redeem'}
                 size={25}
                 color={focused ? theme.colors.primary : theme.colors.disbaled}
               />
@@ -104,18 +105,19 @@ export const AppBottomTab = ({navigation}) => {
           ),
         }}
       />
+
       <Tab.Screen
-        name="SearchList"
-        component={Welcome}
+        name="SignOut"
+        component={SignOut}
         options={{
           headerShown: false,
           tabBarShowLabel: true, // Enable label
-          tabBarLabel: 'Search', // Custom label text
+          tabBarLabel: 'Logout', // Custom label text
           tabBarIcon: ({focused, color, size}) => (
             <View style={styles.notFocusedIcon}>
               <Icon
-                icon_type={'Entypo'}
-                name={'plus'}
+                icon_type={'AntDesign'}
+                name={'logout'}
                 size={25}
                 color={focused ? theme.colors.primary : theme.colors.disbaled}
               />

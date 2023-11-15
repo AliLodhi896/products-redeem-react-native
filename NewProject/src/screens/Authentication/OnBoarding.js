@@ -31,7 +31,7 @@ const OnBoarding = () => {
         text1: 'Please Register Youreself !',
         visibilityTime: 2000,
       });
-      navigation.navigate('Registration', {otp: responseData?.OTP});
+      navigation.navigate('Registration', {otp: responseData?.OTP,mobile_no:data?.mobile_no});
     } else if (
       responseData?.message == 'OTP Sent Successfully' &&
       responseData?.is_register == 1

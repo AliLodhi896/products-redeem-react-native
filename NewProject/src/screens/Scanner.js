@@ -39,9 +39,17 @@ const Scanner = () => {
     setIsLoading(false);
   };
 
+  const reloadScreen = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000); 
+  };
+  
+
   return (
     <View style={styles.mainContainer}>
-      <PrimaryHeader />
+      <PrimaryHeader onPressRefresh={()=>reloadScreen()} />
       <View style={styles.sectionContainer}>
         {isLoading == true ? (
           <View style={{flex:1,justifyContent:'center',alignItems:'center',marginTop:'70%'}}>
