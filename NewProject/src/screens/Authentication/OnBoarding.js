@@ -74,16 +74,17 @@ const OnBoarding = () => {
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionHeading}>Login</Text>
         <Text style={styles.sectionDescription}>
-          Login to continue using the app
+        Enter your Whatsapp Number with country code to continue the app
         </Text>
         <InputField
           name="mobile_no"
           control={control}
+          lableVisible={false}
           lable={'Mobile Number'}
           rules={{
             required: 'Mobile Number is required',
           }}
-          placeholder="Enter your mobile number..."
+          placeholder="eg 999-999-9999"
         />
         {errors.mobile_no && (
           <Text style={styles.errormessage}>* {errors.mobile_no.message}</Text>
@@ -126,10 +127,8 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
   },
   logoContainer: {
-    height: 100,
-    width: 100,
-    borderRadius: 100,
-    backgroundColor: theme.colors.secondary,
+    height: 200,
+    width: 200,
     padding: 10,
   },
   sectionContainer: {

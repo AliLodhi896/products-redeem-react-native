@@ -91,7 +91,7 @@ export const AppBottomTab = ({navigation}) => {
         options={{
           headerShown: false,
           tabBarShowLabel: true, // Enable label
-          tabBarLabel: 'Scan Request', // Custom label text
+          tabBarLabel: 'Scan History', // Custom label text
           tabBarIcon: ({focused, color, size}) => (
             <View style={styles.notFocusedIcon}>
               <Icon

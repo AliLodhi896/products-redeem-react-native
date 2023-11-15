@@ -13,7 +13,8 @@ import PrimaryHeader from '../components/Headers/PrimaryHeader';
 import {get_scan_history} from '../apis/Scan';
 import {useFocusEffect} from '@react-navigation/native';
 import {AuthContext} from '../context/AuthContext';
-import { user_profile } from '../apis';
+import {user_profile} from '../apis';
+import { SkeletonLoader } from '../components';
 
 const ScanRequest = () => {
   const {
@@ -21,16 +22,19 @@ const ScanRequest = () => {
     handleSubmit,
     formState: {errors, isValid},
   } = useForm({mode: 'all'});
-  const {userToken,userDetails,setUserDetails} = useContext(AuthContext);
+  const {userToken, userDetails, setUserDetails} = useContext(AuthContext);
   const [scannedItems, setScannedItems] = useState([]);
-  
+  const [isLoading, setIsLoading] = useState(false);
+
   const getScanRequests = async () => {
+    setIsLoading(true);
     const responseData = await get_scan_history(userToken);
     const userDetailsData = await user_profile(userToken);
-    setUserDetails(userDetailsData?.data)
+    setUserDetails(userDetailsData?.data);
     if (responseData?.status == 'success') {
       setScannedItems(responseData?.data);
     }
+    setIsLoading(false);
   };
 
   useFocusEffect(
@@ -39,7 +43,7 @@ const ScanRequest = () => {
     }, []),
   );
 
-  return (
+  return isLoading == true ? <SkeletonLoader /> :  (
     <View style={styles.mainContainer}>
       <PrimaryHeader />
       <ScrollView style={styles.sectionContainer}>
@@ -48,7 +52,7 @@ const ScanRequest = () => {
             flexDirection: 'row',
             justifyContent: 'space-between',
             backgroundColor: theme.colors.lightdisbaled,
-            height: 'auto',
+            height: 150,
             padding: 20,
             borderRadius: 10,
             marginVertical: 20,
@@ -68,27 +72,10 @@ const ScanRequest = () => {
                 color: theme.colors.primaryText,
                 fontWeight: 'bold',
               }}>
-             {userDetails?.BalPoint}
-            </Text>
-            <Text
-              style={{
-                fontSize: 12,
-                color: theme.colors.primaryText,
-                fontWeight: 'bold',
-                marginTop: 20,
-              }}>
-              Today's Points
-            </Text>
-            <Text
-              style={{
-                fontSize: 16,
-                color: theme.colors.primaryText,
-                fontWeight: 'bold',
-              }}>
-             {userDetails?.BalPoint}
+              {userDetails?.BalPoint}
             </Text>
           </View>
-          <View style={{height: 80, width: 80}}>
+          <View style={{height: 60, width: 60}}>
             <Image
               source={require('../assets/images/points.png')}
               style={{width: '100%', height: '100%'}}
@@ -101,126 +88,123 @@ const ScanRequest = () => {
                 fontWeight: 'bold',
                 marginTop: 20,
               }}>
-             {userDetails?.Name}
+              {userDetails?.Name}
             </Text>
           </View>
         </View>
         <Text style={styles.sectionSubHeading}>Recent Scanned Products</Text>
-        {scannedItems?.map(item => {
-          const parsedDate = new Date(item?.ScanDateTime?.date);
-          const year = parsedDate.getFullYear();
-          const month = parsedDate.getMonth() + 1;
-          const day = parsedDate.getDate();
-          const hours = parsedDate.getHours();
-          const minutes = parsedDate.getMinutes();
-          const seconds = parsedDate.getSeconds();
-          const milliseconds = parsedDate.getMilliseconds();
-          const formattedDate = `${year}-${month < 10 ? '0' + month : month}-${
-            day < 10 ? '0' + day : day
-          }`;
-          const formattedTime = `${hours}:${minutes}`;
-          return (
-            <TouchableOpacity
-              style={{
-                padding: 20,
-                backgroundColor: theme.colors.background,
-                shadowColor: '#000',
-                shadowOffset: {
-                  width: 0.5,
-                  height: 0.5,
-                },
-                shadowOpacity: 0.2,
-                shadowRadius: 5,
-                elevation: 4,
-                borderRadius: 20,
-                marginBottom: 20,
-              }}>
-              <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        {isLoading == true ? (
+          <>
+            <SkeletonLoader />
+          </>
+        ) : (
+          scannedItems?.map(item => {
+            const parsedDate = new Date(item?.ScanDateTime?.date);
+            const months = [
+              'January',
+              'February',
+              'March',
+              'April',
+              'May',
+              'June',
+              'July',
+              'August',
+              'September',
+              'October',
+              'November',
+              'December',
+            ];
+            const year = parsedDate.getFullYear();
+            const month = months[parsedDate.getMonth()];
+            const day = parsedDate.getDate();
+            const hours = parsedDate.getHours();
+            const minutes = parsedDate.getMinutes();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            const formattedDate = `${day} ${month} ${year} ${
+              hours % 12 || 12
+            }:${minutes < 10 ? '0' + minutes : minutes} ${ampm}`;
+
+            const formattedTime = `${hours}:${minutes}`;
+            return (
+              <TouchableOpacity
+                style={{
+                  padding: 20,
+                  marginHorizontal: 10,
+                  backgroundColor: theme.colors.background,
+                  shadowColor: '#000',
+                  shadowOffset: {
+                    width: 0.5,
+                    height: 0.5,
+                  },
+                  shadowOpacity: 0.2,
+                  shadowRadius: 5,
+                  elevation: 4,
+                  borderRadius: 20,
+                  marginBottom: 20,
+                }}>
                 <View
                   style={{
-                    width: 'auto',
-                    backgroundColor: '#FCEAD3',
-                    padding: 4,
-                    borderRadius: 40,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <View
+                    style={{
+                      width: 'auto',
+                      backgroundColor: '#FCEAD3',
+                      padding: 4,
+                      borderRadius: 40,
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 10,
+                        color: 'orange',
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+                      }}>
+                      {item?.QRCodeValue}
+                    </Text>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
                   }}>
                   <Text
                     style={{
-                      fontSize: 10,
-                      color: 'orange',
+                      fontSize: 14,
+                      color: theme.colors.primaryText,
                       fontWeight: 'bold',
-                      textAlign: 'center',
+                      marginVertical: 10,
                     }}>
-                    {item?.QRCodeValue}
+                    {item?.ItemName}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: theme.colors.success,
+                      fontWeight: 'bold',
+                      marginVertical: 10,
+                    }}>
+                    {item?.Point}
                   </Text>
                 </View>
-              </View>
-              <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    color: theme.colors.primaryText,
-                    fontWeight: 'bold',
-                    marginVertical: 10,
-                  }}>
-                  {item?.ItemName}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    color: theme.colors.primaryText,
-                    fontWeight: 'bold',
-                    marginVertical: 10,
-                  }}>
-                  $ {item?.Point}
-                </Text>
-              </View>
-              <View style={{flexDirection: 'row'}}>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    color: theme.colors.disbaled,
-                    fontWeight: 'bold',
-                    marginVertical: 2,
-                  }}>
-                  Scanned Date:
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    color: theme.colors.disbaled,
-                    fontWeight: 'bold',
-                    marginVertical: 2,
-                    marginLeft: 10,
-                  }}>
-                  {formattedDate}
-                </Text>
-              </View>
-              <View style={{flexDirection: 'row'}}>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    color: theme.colors.disbaled,
-                    fontWeight: 'bold',
-                    marginVertical: 2,
-                  }}>
-                  Scanned Time:
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    color: theme.colors.disbaled,
-                    fontWeight: 'bold',
-                    marginVertical: 2,
-                    marginLeft: 10,
-                  }}>
-                  {formattedTime}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          );
-        })}
+                <View style={{flexDirection: 'row'}}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: theme.colors.disbaled,
+                      fontWeight: 'bold',
+                      marginVertical: 2,
+                      marginLeft: 10,
+                    }}>
+                    {formattedDate}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })
+        )}
       </ScrollView>
     </View>
   );

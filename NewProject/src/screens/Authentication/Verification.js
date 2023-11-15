@@ -12,9 +12,9 @@ import {
   useBlurOnFulfill,
   useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
+import Toast from 'react-native-toast-message';
 
 const CELL_COUNT = 4;
-
 const Verification = ({route}) => {
   const {mobile_no} = route.params;
   const navigation = useNavigation();
@@ -37,11 +37,20 @@ const Verification = ({route}) => {
     setIsLoading(true);
     const responseData = await verify_otp(mobile_no, value);
     if (responseData?.status == 'success') {
+      Toast.show({
+        type: 'success',
+        text1: responseData?.message,
+        visibilityTime: 2000,
+      });
       setUserDetails(responseData?.data);
       setUserToken(responseData?.token);
       setIsSignin(true);
     } else {
-      navigation.navigate('Registration', {otp: responseData?.OTP});
+      Toast.show({
+        type: 'error',
+        text1: responseData?.message,
+        visibilityTime: 2000,
+      });
     }
     setIsLoading(false);
   };
@@ -67,7 +76,7 @@ const Verification = ({route}) => {
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionHeading}>Otp Verification</Text>
         <Text style={styles.sectionDescription}>
-          Verify otp to continue using the app
+        Enter OTP, sent on your given WhatsApp
         </Text>
 
         <CodeField
@@ -93,33 +102,6 @@ const Verification = ({route}) => {
           title="Verify"
           onPress={handleSubmit(verifyOtp)}
         />
-
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Text
-            style={{
-              fontSize: 14,
-              color: theme.colors.disbaled,
-              fontWeight: 'bold',
-            }}>
-            Don't have an account?
-          </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Registration')}>
-            <Text
-              style={{
-                fontSize: 14,
-                color: theme.colors.primary,
-                fontWeight: 'bold',
-                marginLeft: 10,
-              }}>
-              Register Now
-            </Text>
-          </TouchableOpacity>
-        </View>
       </View>
     </View>
   );
@@ -130,10 +112,8 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
   },
   logoContainer: {
-    height: 100,
-    width: 100,
-    borderRadius: 100,
-    backgroundColor: theme.colors.secondary,
+    height: 200,
+    width: 200,
     padding: 10,
   },
   sectionContainer: {
@@ -165,6 +145,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 10,
+    color:theme.colors.primary
   },
   focusCell: {
     borderColor: theme.colors.primary,

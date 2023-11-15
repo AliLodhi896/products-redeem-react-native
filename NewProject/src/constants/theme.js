@@ -10,7 +10,9 @@ export default {
     lightsecondary:'#747688',
     disbaled:'#8E8E93',
     lightdisbaled:'#F4F5FA',
-    error:'red'
+    error:'red',
+    success:'green',
+
     
   },
   fontSizes: {

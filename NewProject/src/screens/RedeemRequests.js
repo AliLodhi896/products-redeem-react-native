@@ -1,11 +1,12 @@
 import React, {useContext, useState, useCallback} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
 import theme from '../constants/theme';
 import {useForm} from 'react-hook-form';
 import PrimaryHeader from '../components/Headers/PrimaryHeader';
 import {AuthContext} from '../context/AuthContext';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {get_redeem_history} from '../apis';
+import {SkeletonLoader} from '../components';
 
 const RedeemRequests = () => {
   const {
@@ -16,12 +17,15 @@ const RedeemRequests = () => {
   const {userToken} = useContext(AuthContext);
   const [activeTab, setaAtiveTab] = useState('Sent');
   const [reedemedRequests, setReedemedRequests] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getReedemedRequests = async () => {
+    setIsLoading(true);
     const responseData = await get_redeem_history(userToken);
     if (responseData?.status == 'success') {
       setReedemedRequests(responseData?.data);
     }
+    setIsLoading(false);
   };
 
   useFocusEffect(
@@ -29,10 +33,10 @@ const RedeemRequests = () => {
       getReedemedRequests();
     }, []),
   );
-  return (
+  return isLoading == true ? <SkeletonLoader /> : (
     <View style={styles.mainContainer}>
       <PrimaryHeader />
-      <View style={styles.sectionContainer}>
+      <ScrollView style={styles.sectionContainer}>
         <Text style={styles.sectionHeading}>Your</Text>
         <Text style={styles.sectionHeading}>Redeemed Requests</Text>
         <View
@@ -49,7 +53,10 @@ const RedeemRequests = () => {
             onPress={() => setaAtiveTab('Sent')}
             style={{
               width: '50%',
-              backgroundColor: activeTab == 'Sent' ?  theme.colors.backgroundSecondary :  theme.colors.lightdisbaled,
+              backgroundColor:
+                activeTab == 'Sent'
+                  ? theme.colors.backgroundSecondary
+                  : theme.colors.lightdisbaled,
               borderRadius: 40,
               alignItems: 'center',
               justifyContent: 'center',
@@ -68,7 +75,10 @@ const RedeemRequests = () => {
             onPress={() => setaAtiveTab('Completed')}
             style={{
               width: '50%',
-              backgroundColor: activeTab == 'Completed' ?  theme.colors.backgroundSecondary :  theme.colors.lightdisbaled,
+              backgroundColor:
+                activeTab == 'Completed'
+                  ? theme.colors.backgroundSecondary
+                  : theme.colors.lightdisbaled,
               borderRadius: 40,
               alignItems: 'center',
               justifyContent: 'center',
@@ -84,232 +94,235 @@ const RedeemRequests = () => {
             </Text>
           </TouchableOpacity>
         </View>
-        {activeTab == 'Sent'
-          ? reedemedRequests?.map(item => {
-              return (
-                item?.RStatus ==
-                0 && (
-                  <TouchableOpacity
+        {isLoading == true ? (
+          null
+        ) : activeTab == 'Sent' ? (
+          reedemedRequests?.map(item => {
+            return (
+              item?.RStatus == 0 && (
+                <TouchableOpacity
+                  style={{
+                    marginHorizontal:10,
+                    padding: 20,
+                    backgroundColor: theme.colors.background,
+                    shadowColor: '#000',
+                    shadowOffset: {
+                      width: 0.5,
+                      height: 0.5,
+                    },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 5,
+                    elevation: 4,
+                    borderRadius: 20,
+                    marginBottom: 20,
+                  }}>
+                  <View
                     style={{
-                      padding: 20,
-                      backgroundColor: theme.colors.background,
-                      shadowColor: '#000',
-                      shadowOffset: {
-                        width: 0.5,
-                        height: 0.5,
-                      },
-                      shadowOpacity: 0.2,
-                      shadowRadius: 5,
-                      elevation: 4,
-                      borderRadius: 20,
-                      marginBottom: 20,
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
                     }}>
                     <View
                       style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                      }}>
-                      <View
-                        style={{
-                          width: '30%',
-                          backgroundColor: '#DCEED6',
-                          padding: 4,
-                          borderRadius: 40,
-                        }}>
-                        <Text
-                          style={{
-                            fontSize: 10,
-                            color: 'green',
-                            fontWeight: 'bold',
-                            textAlign: 'center',
-                          }}>
-                          {item?.RStatus == 0 ? 'Sent' : 'Completed'}
-                        </Text>
-                      </View>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
+                        width: '30%',
+                        backgroundColor: '#DCEED6',
+                        padding: 4,
+                        borderRadius: 40,
                       }}>
                       <Text
                         style={{
-                          fontSize: 14,
-                          color: theme.colors.primaryText,
+                          fontSize: 10,
+                          color: 'green',
                           fontWeight: 'bold',
-                          marginVertical: 10,
+                          textAlign: 'center',
                         }}>
-                        {item?.SchemeName}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          color: theme.colors.primaryText,
-                          fontWeight: 'bold',
-                          marginVertical: 10,
-                        }}>
-                        $ {item?.SchemePoint}
+                        {item?.RStatus == 0 ? 'Sent' : 'Completed'}
                       </Text>
                     </View>
-                    <View style={{flexDirection: 'row'}}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: theme.colors.disbaled,
-                          fontWeight: 'bold',
-                          marginVertical: 2,
-                        }}>
-                        Remark:
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: theme.colors.disbaled,
-                          fontWeight: 'bold',
-                          marginVertical: 2,
-                          marginLeft: 10,
-                        }}>
-                        {item?.Remark1} | {item?.Remark2}
-                      </Text>
-                    </View>
-                    <View style={{flexDirection: 'row'}}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: theme.colors.disbaled,
-                          fontWeight: 'bold',
-                          marginVertical: 2,
-                        }}>
-                        Redeemed Date:
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: theme.colors.disbaled,
-                          fontWeight: 'bold',
-                          marginVertical: 2,
-                          marginLeft: 10,
-                        }}>
-                        20 Jan 2024
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                )
-              );
-            })
-          : reedemedRequests?.map(item => {
-              return (
-                item?.RStatus ==
-                1 &&(
-                  <TouchableOpacity
+                  </View>
+                  <View
                     style={{
-                      padding: 20,
-                      backgroundColor: theme.colors.background,
-                      shadowColor: '#000',
-                      shadowOffset: {
-                        width: 0.5,
-                        height: 0.5,
-                      },
-                      shadowOpacity: 0.2,
-                      shadowRadius: 5,
-                      elevation: 4,
-                      borderRadius: 20,
-                      marginBottom: 20,
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: theme.colors.primaryText,
+                        fontWeight: 'bold',
+                        marginVertical: 10,
+                      }}>
+                      {item?.SchemeName}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: theme.colors.success,
+                        fontWeight: 'bold',
+                        marginVertical: 10,
+                      }}>
+                      {item?.SchemePoint}
+                    </Text>
+                  </View>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: theme.colors.disbaled,
+                        fontWeight: 'bold',
+                        marginVertical: 2,
+                      }}>
+                      Remark:
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: theme.colors.disbaled,
+                        fontWeight: 'bold',
+                        marginVertical: 2,
+                        marginLeft: 10,
+                      }}>
+                      {item?.Remark1} | {item?.Remark2}
+                    </Text>
+                  </View>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: theme.colors.disbaled,
+                        fontWeight: 'bold',
+                        marginVertical: 2,
+                      }}>
+                      Redeemed Date:
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: theme.colors.disbaled,
+                        fontWeight: 'bold',
+                        marginVertical: 2,
+                        marginLeft: 10,
+                      }}>
+                      20 Jan 2024
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )
+            );
+          })
+        ) : (
+          reedemedRequests?.map(item => {
+            return (
+              item?.RStatus == 1 && (
+                <TouchableOpacity
+                  style={{
+                    padding: 20,
+                    backgroundColor: theme.colors.background,
+                    shadowColor: '#000',
+                    shadowOffset: {
+                      width: 0.5,
+                      height: 0.5,
+                    },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 5,
+                    elevation: 4,
+                    borderRadius: 20,
+                    marginBottom: 20,
+                  }}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
                     }}>
                     <View
                       style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
+                        width: '30%',
+                        backgroundColor: '#DCEED6',
+                        padding: 4,
+                        borderRadius: 40,
                       }}>
-                      <View
+                      <Text
                         style={{
-                          width: '30%',
-                          backgroundColor: '#DCEED6',
-                          padding: 4,
-                          borderRadius: 40,
+                          fontSize: 10,
+                          color: 'green',
+                          fontWeight: 'bold',
+                          textAlign: 'center',
                         }}>
-                        <Text
-                          style={{
-                            fontSize: 10,
-                            color: 'green',
-                            fontWeight: 'bold',
-                            textAlign: 'center',
-                          }}>
-                          {item?.RStatus == 0 ? 'Sent' : 'Completed'}
-                        </Text>
-                      </View>
+                        {item?.RStatus == 0 ? 'Sent' : 'Completed'}
+                      </Text>
                     </View>
-                    <View
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}>
+                    <Text
                       style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
+                        fontSize: 14,
+                        color: theme.colors.primaryText,
+                        fontWeight: 'bold',
+                        marginVertical: 10,
                       }}>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          color: theme.colors.primaryText,
-                          fontWeight: 'bold',
-                          marginVertical: 10,
-                        }}>
-                        {item?.SchemeName}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          color: theme.colors.primaryText,
-                          fontWeight: 'bold',
-                          marginVertical: 10,
-                        }}>
-                        $ {item?.SchemePoint}
-                      </Text>
-                    </View>
-                    <View style={{flexDirection: 'row'}}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: theme.colors.disbaled,
-                          fontWeight: 'bold',
-                          marginVertical: 2,
-                        }}>
-                        Remark:
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: theme.colors.disbaled,
-                          fontWeight: 'bold',
-                          marginVertical: 2,
-                          marginLeft: 10,
-                        }}>
-                        {item?.Remark1} | {item?.Remark2}
-                      </Text>
-                    </View>
-                    <View style={{flexDirection: 'row'}}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: theme.colors.disbaled,
-                          fontWeight: 'bold',
-                          marginVertical: 2,
-                        }}>
-                        Redeemed Date:
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: theme.colors.disbaled,
-                          fontWeight: 'bold',
-                          marginVertical: 2,
-                          marginLeft: 10,
-                        }}>
-                        20 Jan 2024
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                )
-              );
-            })}
-      </View>
+                      {item?.SchemeName}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: theme.colors.primaryText,
+                        fontWeight: 'bold',
+                        marginVertical: 10,
+                      }}>
+                      {item?.SchemePoint}
+                    </Text>
+                  </View>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: theme.colors.disbaled,
+                        fontWeight: 'bold',
+                        marginVertical: 2,
+                      }}>
+                      Remark:
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: theme.colors.disbaled,
+                        fontWeight: 'bold',
+                        marginVertical: 2,
+                        marginLeft: 10,
+                      }}>
+                      {item?.Remark1} | {item?.Remark2}
+                    </Text>
+                  </View>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: theme.colors.disbaled,
+                        fontWeight: 'bold',
+                        marginVertical: 2,
+                      }}>
+                      Redeemed Date:
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: theme.colors.disbaled,
+                        fontWeight: 'bold',
+                        marginVertical: 2,
+                        marginLeft: 10,
+                      }}>
+                      20 Jan 2024
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )
+            );
+          })
+        )}
+      </ScrollView>
     </View>
   );
 };
