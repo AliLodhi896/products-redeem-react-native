@@ -150,7 +150,7 @@ const Home = () => {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => setIsSignin(false)}
+            onPress={() => navigation.navigate('Help')}
             style={{
               height: 150,
               width: '48%',
@@ -169,8 +169,8 @@ const Home = () => {
             }}>
             <View style={styles.container4}>
               <Icon
-                icon_type={'AntDesign'}
-                name={'logout'}
+                icon_type={'Entypo'}
+                name={'help'}
                 size={20}
                 color={theme.colors.background}
               />
@@ -182,7 +182,7 @@ const Home = () => {
                 fontWeight: 'bold',
                 marginTop: 20,
               }}>
-              Logout
+              Help
             </Text>
           </TouchableOpacity>
         </View>

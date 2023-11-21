@@ -1,8 +1,9 @@
 import {BaseUrl} from '../constants/BaseUrl';
 
 export const registered_or_unregistered = async mobile_no => {
+  const numberWithCode = '91' + mobile_no
   try {
-    let base_url = `${BaseUrl}reward/mobile_no_get.php?mobile=${mobile_no}`;
+    let base_url = `${BaseUrl}reward/mobile_no_get.php?mobile=${numberWithCode}`;
     const response = await fetch(base_url, {
       method: 'GET',
     });
@@ -27,8 +28,9 @@ export const user_profile = async userToken => {
 };
 
 export const verify_otp = async (mobile_no, otp) => {
+  const numberWithCode = '91' + mobile_no
   try {
-    let base_url = `${BaseUrl}reward/verify_otp.php?mobile=${mobile_no}&otp=${otp}`;
+    let base_url = `${BaseUrl}reward/verify_otp.php?mobile=${numberWithCode}&otp=${otp}`;
     const response = await fetch(base_url, {
       method: 'GET',
     });

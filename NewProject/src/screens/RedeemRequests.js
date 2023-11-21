@@ -13,8 +13,8 @@ import {AuthContext} from '../context/AuthContext';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {add_rewards, get_redeem_history} from '../apis';
 import {AddRedeemRequest, SkeletonLoader} from '../components';
-import Icon from '../constants/Icon';
 import Toast from 'react-native-toast-message';
+import Icon from '../constants/Icon';
 
 const RedeemRequests = () => {
   const {
@@ -22,12 +22,12 @@ const RedeemRequests = () => {
     handleSubmit,
     formState: {errors, isValid},
   } = useForm({mode: 'all'});
+  const navigation = useNavigation();
   const {userToken} = useContext(AuthContext);
   const [activeTab, setaAtiveTab] = useState('Sent');
   const [reedemedRequests, setReedemedRequests] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-
   const getReedemedRequests = async () => {
     setIsLoading(true);
     const responseData = await get_redeem_history(userToken);
@@ -64,6 +64,15 @@ const RedeemRequests = () => {
       getReedemedRequests();
     }, []),
   );
+  const getRandomColor = () => {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  };
+
   return isLoading == true ? (
     <SkeletonLoader />
   ) : (
@@ -90,7 +99,7 @@ const RedeemRequests = () => {
           <TouchableOpacity
             onPress={() => setaAtiveTab('Sent')}
             style={{
-              width: '50%',
+              width: '30%',
               backgroundColor:
                 activeTab == 'Sent'
                   ? theme.colors.backgroundSecondary
@@ -106,13 +115,13 @@ const RedeemRequests = () => {
                 fontWeight: 'bold',
                 textAlign: 'center',
               }}>
-              Sent Request
+              New
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => setaAtiveTab('Completed')}
             style={{
-              width: '50%',
+              width: '30%',
               backgroundColor:
                 activeTab == 'Completed'
                   ? theme.colors.backgroundSecondary
@@ -128,7 +137,29 @@ const RedeemRequests = () => {
                 fontWeight: 'bold',
                 textAlign: 'center',
               }}>
-              Completed Request
+              Completed
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setaAtiveTab('Rejected')}
+            style={{
+              width: '30%',
+              backgroundColor:
+                activeTab == 'Rejected'
+                  ? theme.colors.backgroundSecondary
+                  : theme.colors.lightdisbaled,
+              borderRadius: 40,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Text
+              style={{
+                fontSize: 14,
+                color: theme.colors.primaryText,
+                fontWeight: 'bold',
+                textAlign: 'center',
+              }}>
+              Rejected
             </Text>
           </TouchableOpacity>
         </View>
@@ -136,8 +167,92 @@ const RedeemRequests = () => {
           ? null
           : activeTab == 'Sent'
           ? reedemedRequests?.map(item => {
+              const randomColor = getRandomColor();
               return (
                 item?.RStatus == 0 && (
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: randomColor,
+                      paddingLeft: 10,
+                      borderRadius: 20,
+                    }}>
+                    <View
+                      style={{
+                        padding: 20,
+                        backgroundColor: theme.colors.background,
+                        shadowColor: '#000',
+                        shadowOffset: {
+                          width: 0.5,
+                          height: 0.5,
+                        },
+                        shadowOpacity: 0.2,
+                        shadowRadius: 5,
+                        elevation: 4,
+                        borderRadius: 20,
+                      }}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                        }}>
+                        <View
+                          style={{
+                            width: '100%',
+                            flexDirection: 'row',
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: theme.fontSizes.medium,
+                              color: randomColor,
+                              fontWeight: 'bold',
+                            }}>
+                            Plus Points {item?.SchemePoint}
+                          </Text>
+                        </View>
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                        }}>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            color: theme.colors.primaryText,
+                            fontWeight: 'bold',
+                            marginVertical: 10,
+                          }}>
+                          {item?.SchemeName}
+                        </Text>
+                      </View>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          color: theme.colors.disbaled,
+                          fontWeight: 'bold',
+                          marginVertical: 2,
+                        }}>
+                        {item?.Remark1} | {item?.Remark2}
+                      </Text>
+                      <View style={{flexDirection: 'row'}}>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            color: theme.colors.disbaled,
+                            fontWeight: 'bold',
+                            marginVertical: 2,
+                          }}>
+                          20 Jan 2024
+                        </Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                )
+              );
+            })
+          : reedemedRequests?.map(item => {
+              return (
+                item?.RStatus == 1 && (
                   <TouchableOpacity
                     style={{
                       marginHorizontal: 10,
@@ -161,19 +276,16 @@ const RedeemRequests = () => {
                       }}>
                       <View
                         style={{
-                          width: '30%',
-                          backgroundColor: '#DCEED6',
-                          padding: 4,
-                          borderRadius: 40,
+                          width: '100%',
+                          flexDirection: 'row',
                         }}>
                         <Text
                           style={{
-                            fontSize: 10,
+                            fontSize: theme.fontSizes.medium,
                             color: 'green',
                             fontWeight: 'bold',
-                            textAlign: 'center',
                           }}>
-                          {item?.RStatus == 0 ? 'Sent' : 'Completed'}
+                          Plus Points {item?.SchemePoint}
                         </Text>
                       </View>
                     </View>
@@ -190,126 +302,6 @@ const RedeemRequests = () => {
                           marginVertical: 10,
                         }}>
                         {item?.SchemeName}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          color: theme.colors.success,
-                          fontWeight: 'bold',
-                          marginVertical: 10,
-                        }}>
-                        {item?.SchemePoint}
-                      </Text>
-                    </View>
-                    <View style={{flexDirection: 'row'}}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: theme.colors.disbaled,
-                          fontWeight: 'bold',
-                          marginVertical: 2,
-                        }}>
-                        Remark:
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: theme.colors.disbaled,
-                          fontWeight: 'bold',
-                          marginVertical: 2,
-                          marginLeft: 10,
-                        }}>
-                        {item?.Remark1} | {item?.Remark2}
-                      </Text>
-                    </View>
-                    <View style={{flexDirection: 'row'}}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: theme.colors.disbaled,
-                          fontWeight: 'bold',
-                          marginVertical: 2,
-                        }}>
-                        Redeemed Date:
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: theme.colors.disbaled,
-                          fontWeight: 'bold',
-                          marginVertical: 2,
-                          marginLeft: 10,
-                        }}>
-                        20 Jan 2024
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                )
-              );
-            })
-          : reedemedRequests?.map(item => {
-              return (
-                item?.RStatus == 1 && (
-                  <TouchableOpacity
-                    style={{
-                      padding: 20,
-                      backgroundColor: theme.colors.background,
-                      shadowColor: '#000',
-                      shadowOffset: {
-                        width: 0.5,
-                        height: 0.5,
-                      },
-                      shadowOpacity: 0.2,
-                      shadowRadius: 5,
-                      elevation: 4,
-                      borderRadius: 20,
-                      marginBottom: 20,
-                    }}>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                      }}>
-                      <View
-                        style={{
-                          width: '30%',
-                          backgroundColor: '#DCEED6',
-                          padding: 4,
-                          borderRadius: 40,
-                        }}>
-                        <Text
-                          style={{
-                            fontSize: 10,
-                            color: 'green',
-                            fontWeight: 'bold',
-                            textAlign: 'center',
-                          }}>
-                          {item?.RStatus == 0 ? 'Sent' : 'Completed'}
-                        </Text>
-                      </View>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          color: theme.colors.primaryText,
-                          fontWeight: 'bold',
-                          marginVertical: 10,
-                        }}>
-                        {item?.SchemeName}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          color: theme.colors.primaryText,
-                          fontWeight: 'bold',
-                          marginVertical: 10,
-                        }}>
-                        {item?.SchemePoint}
                       </Text>
                     </View>
                     <View style={{flexDirection: 'row'}}>
@@ -360,10 +352,10 @@ const RedeemRequests = () => {
             })}
       </ScrollView>
       <TouchableOpacity
-        onPress={() => setIsVisible(true)}
+        onPress={() => navigation.navigate('RedeemSchemes')}
         style={{
           position: 'absolute',
-          bottom: 80,
+          bottom: 40,
           right: 20,
           backgroundColor: theme.colors.primary,
           borderRadius: 40,

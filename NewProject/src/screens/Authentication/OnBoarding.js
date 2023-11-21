@@ -10,7 +10,7 @@ import Toast from 'react-native-toast-message';
 
 const OnBoarding = () => {
   const navigation = useNavigation();
-  const {setIsSignin,appInfo} = useContext(AuthContext);
+  const {setIsSignin, appInfo} = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const {
     control,
@@ -19,9 +19,9 @@ const OnBoarding = () => {
   } = useForm({mode: 'all'});
 
   const sendOtp = async data => {
-    setIsLoading(true)
+    setIsLoading(true);
     const responseData = await registered_or_unregistered(data?.mobile_no);
-    console.log('responseData',responseData)
+    console.log('responseData', responseData);
     if (
       responseData?.message == 'OTP Sent Successfully' &&
       responseData?.is_register == 0
@@ -31,31 +31,33 @@ const OnBoarding = () => {
         text1: 'Please Register Youreself !',
         visibilityTime: 2000,
       });
-      navigation.navigate('Registration', {otp: responseData?.OTP,mobile_no:data?.mobile_no});
+      navigation.navigate('Registration', {
+        otp: responseData?.OTP,
+        mobile_no: data?.mobile_no,
+      });
     } else if (
       responseData?.message == 'OTP Sent Successfully' &&
       responseData?.is_register == 1
-    ){
+    ) {
       Toast.show({
         type: 'success',
         text1: responseData?.message,
         visibilityTime: 2000,
       });
       navigation.navigate('Verification', {mobile_no: data?.mobile_no});
-    }else{
+    } else {
       Toast.show({
         type: 'error',
         text1: 'Something Went Wrong !',
         visibilityTime: 2000,
       });
     }
-    setIsLoading(false)
-
+    setIsLoading(false);
   };
 
   return (
     <View style={styles.mainContainer}>
-      <SecondaryHeader onPress={()=>navigation.goBack()} />
+      <SecondaryHeader onPress={() => navigation.goBack()} />
       <View
         style={{
           alignContent: 'center',
@@ -65,7 +67,7 @@ const OnBoarding = () => {
         }}>
         <View style={styles.logoContainer}>
           <Image
-            source={{uri:appInfo?.Logo}}
+            source={{uri: appInfo?.Logo}}
             style={{width: '100%', height: '100%'}}
             resizeMode="contain"
           />
@@ -74,10 +76,11 @@ const OnBoarding = () => {
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionHeading}>Login</Text>
         <Text style={styles.sectionDescription}>
-        Enter your Whatsapp Number with country code to continue the app
+          Enter your Whatsapp Number with country code to continue the app
         </Text>
         <InputField
           name="mobile_no"
+          phone_number={false}
           control={control}
           lableVisible={false}
           lable={'Mobile Number'}
@@ -89,7 +92,11 @@ const OnBoarding = () => {
         {errors.mobile_no && (
           <Text style={styles.errormessage}>* {errors.mobile_no.message}</Text>
         )}
-        <PrimaryButton loader={isLoading} title="Send OTP" onPress={handleSubmit(sendOtp)} />
+        <PrimaryButton
+          loader={isLoading}
+          title="Send OTP"
+          onPress={handleSubmit(sendOtp)}
+        />
 
         <View
           style={{
@@ -103,7 +110,7 @@ const OnBoarding = () => {
               color: theme.colors.disbaled,
               fontWeight: 'bold',
             }}> */}
-            {/* Don't have an account?
+          {/* Don't have an account?
           </Text> */}
           {/* <TouchableOpacity onPress={() => navigation.navigate('Registration')}>
             <Text

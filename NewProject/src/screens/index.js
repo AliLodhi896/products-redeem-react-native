@@ -10,4 +10,8 @@ import ScanRequest from "./ScanRequest";
 import Welcome from "./Authentication/Welcome";
 import Scanner from "./Scanner";
 
-export {OnBoarding,Registration,Home,RedeemRequests,ScanRequest,Welcome,Scanner,Verification}
+import RedeemSchemes from "./RedeemSchemes";
+import Help from "./Help";
+import SchemeDetail from "./SchemeDetail";
+
+export {SchemeDetail,Help,RedeemSchemes,OnBoarding,Registration,Home,RedeemRequests,ScanRequest,Welcome,Scanner,Verification}
