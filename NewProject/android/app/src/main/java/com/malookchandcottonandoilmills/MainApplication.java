@@ -1,4 +1,4 @@
-package com.newproject;
+package com.malookchandcottonandoilmills;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

@@ -73,10 +73,10 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.newproject"
+    namespace "com.malookchandcottonandoilmills"
     defaultConfig {
         missingDimensionStrategy 'react-native-camera', 'general'
-        applicationId "com.newproject"
+        applicationId "com.malookchandcottonandoilmills"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
