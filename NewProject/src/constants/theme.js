@@ -12,8 +12,6 @@ export default {
     lightdisbaled:'#F4F5FA',
     error:'red',
     success:'green',
-
-    
   },
   fontSizes: {
     xsm: 8,

@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>NewProject</string>
+	<string>MallokChandCottonAndOilMills</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -38,7 +38,7 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 		<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>ShifaNow want to access your Photo Library</string>
 	<key>NSPhotoLibraryUsageDescription</key>

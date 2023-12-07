@@ -1,13 +1,95 @@
 import React, {useContext} from 'react';
 import {Image, StyleSheet, View, Text, TouchableOpacity} from 'react-native';
-import {createStackNavigator} from '@react-navigation/stack';
+import {createStackNavigator,TransitionSpecs} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import theme from '../constants/theme';
 import Icon from '../constants/Icon';
-import { Home, RedeemRequests, ScanRequest, Scanner, Welcome } from '../screens';
+import { Help, Home, RedeemRequests, RedeemSchemes, ScanRequest, Scanner, SchemeDetail, Welcome } from '../screens';
+import SignOut from '../screens/Authentication/SignOut';
+
+const Tab = createBottomTabNavigator();
+
 
 const MainStack = createStackNavigator();
-const Tab = createBottomTabNavigator();
+
+
+export const HomeStack = () => {
+  const horizontalAnimation = {
+    gestureDirection: 'horizontal',
+    transitionSpec: {
+      open: TransitionSpecs.TransitionIOSSpec,
+      close: TransitionSpecs.TransitionIOSSpec,
+    },
+    cardStyleInterpolator: ({current, layouts}) => {
+      return {
+        cardStyle: {
+          transform: [
+            {
+              translateX: current.progress.interpolate({
+                inputRange: [0, 1],
+                outputRange: [layouts.screen.width, 0],
+              }),
+            },
+          ],
+        },
+      };
+    },
+  };
+  const defaultStackNavOptions = {
+    headerStyle: {
+      elevation: 0,
+      shadowOpacity: 0,
+    },
+    headerTitleStyle: {
+      fontSize: 18,
+    },
+    headerTintColor: 'white',
+    gestureEnabled: true,
+    ...horizontalAnimation,
+  };
+    return (
+      <MainStack.Navigator screenOptions={defaultStackNavOptions}
+       
+        
+         >
+             <MainStack.Screen
+          name="Home"
+          component={Home}
+          options={{headerShown: false}}
+        />
+           <MainStack.Screen
+          name="RedeemSchemes"
+          component={RedeemSchemes}
+          options={{headerShown: false}}
+        />
+            <MainStack.Screen
+          name="RedeemRequests"
+          component={RedeemRequests}
+          options={{headerShown: false}}
+        />
+          <MainStack.Screen
+          name="Scanner"
+          component={Scanner}
+          options={{headerShown: false}}
+        />
+          <MainStack.Screen
+          name="ScanRequest"
+          component={ScanRequest}
+          options={{headerShown: false}}
+        />
+        <MainStack.Screen
+          name="Help"
+          component={Help}
+          options={{headerShown: false}}
+        />
+          <MainStack.Screen
+          name="SchemeDetail"
+          component={SchemeDetail}
+          options={{headerShown: false}}
+        />
+      </MainStack.Navigator>
+    );
+  };
 
 
 export const AppBottomTab = ({navigation}) => {
@@ -27,7 +109,7 @@ export const AppBottomTab = ({navigation}) => {
       screenOptions={{...defaultTabNavOptions}}>
       <Tab.Screen
         name="Home"
-        component={Home}
+        component={HomeStack}
         options={{
           headerShown: false,
           tabBarShowLabel: true, // Enable label
@@ -44,18 +126,18 @@ export const AppBottomTab = ({navigation}) => {
           ),
         }}
       />
-      <Tab.Screen
-        name="RedeemRequests"
-        component={RedeemRequests}
+           <Tab.Screen
+        name="ScanRequest"
+        component={ScanRequest}
         options={{
           headerShown: false,
           tabBarShowLabel: true, // Enable label
-          tabBarLabel: 'Redeen Req', // Custom label text
+          tabBarLabel: 'Scan History', // Custom label text
           tabBarIcon: ({focused, color, size}) => (
             <View style={styles.notFocusedIcon}>
               <Icon
                 icon_type={'MaterialIcons'}
-                name={'redeem'}
+                name={'document-scanner'}
                 size={25}
                 color={focused ? theme.colors.primary : theme.colors.disbaled}
               />
@@ -85,18 +167,18 @@ export const AppBottomTab = ({navigation}) => {
           ),
         }}
       />
-      <Tab.Screen
-        name="ScanRequest"
-        component={ScanRequest}
+       <Tab.Screen
+        name="RedeemRequests"
+        component={RedeemRequests}
         options={{
           headerShown: false,
           tabBarShowLabel: true, // Enable label
-          tabBarLabel: 'Scan History', // Custom label text
+          tabBarLabel: 'Redeen Req', // Custom label text
           tabBarIcon: ({focused, color, size}) => (
             <View style={styles.notFocusedIcon}>
               <Icon
                 icon_type={'MaterialIcons'}
-                name={'document-scanner'}
+                name={'redeem'}
                 size={25}
                 color={focused ? theme.colors.primary : theme.colors.disbaled}
               />
@@ -104,18 +186,19 @@ export const AppBottomTab = ({navigation}) => {
           ),
         }}
       />
+
       <Tab.Screen
-        name="SearchList"
-        component={Welcome}
+        name="SignOut"
+        component={SignOut}
         options={{
           headerShown: false,
           tabBarShowLabel: true, // Enable label
-          tabBarLabel: 'Search', // Custom label text
+          tabBarLabel: 'Logout', // Custom label text
           tabBarIcon: ({focused, color, size}) => (
             <View style={styles.notFocusedIcon}>
               <Icon
-                icon_type={'Entypo'}
-                name={'plus'}
+                icon_type={'AntDesign'}
+                name={'logout'}
                 size={25}
                 color={focused ? theme.colors.primary : theme.colors.disbaled}
               />

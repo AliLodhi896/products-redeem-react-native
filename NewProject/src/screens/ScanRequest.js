@@ -45,7 +45,7 @@ const ScanRequest = () => {
 
   return isLoading == true ? <SkeletonLoader /> :  (
     <View style={styles.mainContainer}>
-      <PrimaryHeader />
+      <PrimaryHeader onPressRefresh={()=>getScanRequests()}  />
       <ScrollView style={styles.sectionContainer}>
         <View
           style={{
