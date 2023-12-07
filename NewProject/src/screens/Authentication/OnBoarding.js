@@ -21,7 +21,6 @@ const OnBoarding = () => {
   const sendOtp = async data => {
     setIsLoading(true)
     const responseData = await registered_or_unregistered(data?.mobile_no);
-    console.log('responseData',responseData)
     if (
       responseData?.message == 'OTP Sent Successfully' &&
       responseData?.is_register == 0
